@@ -53,4 +53,14 @@ public class Controller {
         List <FileInfo> fileInfoList = storageService.getAllImage();
         return ResponseEntity.status(HttpStatus.OK).body(fileInfoList);
     }
+
+    @DeleteMapping("/fileSystem/{name}")
+    public ResponseEntity<?> deleteFromSystemByName(@PathVariable String name) throws IOException {
+        try {
+            storageService.deleteFromSystem(name);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("File successfully deleted!"));
+        }  catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not delete the file " + name + e.getMessage());
+        }
+    }
 }
