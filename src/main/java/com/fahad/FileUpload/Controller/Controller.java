@@ -1,6 +1,7 @@
 package com.fahad.FileUpload.Controller;
 
 
+import com.fahad.FileUpload.DTOs.FileInfo;
 import com.fahad.FileUpload.DTOs.ResponseMessage;
 import com.fahad.FileUpload.Repository.StorageRepo;
 import com.fahad.FileUpload.Service.StorageService;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/filedata")
+@CrossOrigin("http://localhost:4200/")
 public class Controller {
     private final StorageService storageService;
 
@@ -43,5 +46,11 @@ public class Controller {
             message = "Could not upload the file" + file.getOriginalFilename() + " . Error: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new ResponseMessage(message));
         }
+    }
+
+    @GetMapping("/fileSystem")
+    public ResponseEntity<?> getAllImage() throws IOException {
+        List <FileInfo> fileInfoList = storageService.getAllImage();
+        return ResponseEntity.status(HttpStatus.OK).body(fileInfoList);
     }
 }

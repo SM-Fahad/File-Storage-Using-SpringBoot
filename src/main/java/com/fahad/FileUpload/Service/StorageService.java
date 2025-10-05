@@ -1,5 +1,6 @@
 package com.fahad.FileUpload.Service;
 
+import com.fahad.FileUpload.DTOs.FileInfo;
 import com.fahad.FileUpload.Entity.FileData;
 import com.fahad.FileUpload.Repository.FileRepo;
 import com.fahad.FileUpload.Repository.StorageRepo;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -56,5 +59,21 @@ public class StorageService {
         }
 
         return Files.readAllBytes(new File(fileData.getFilePath()).toPath());
+    }
+
+    public List <FileInfo> getAllImage() {
+        List<FileInfo> fileInfos = new ArrayList<>();
+        List<FileData> fileDataList = fileRepo.findAll();
+
+        fileDataList.forEach(fileData -> {
+            try {
+                byte[] image = Files.readAllBytes(new File(fileData.getFilePath()).toPath());
+                FileInfo fn = new FileInfo(fileData.getName(), fileData.getFilePath(), image);
+                fileInfos.add(fn);
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading file " + fileData.getName(), e);
+            }
+        });
+    return fileInfos;
     }
 }
