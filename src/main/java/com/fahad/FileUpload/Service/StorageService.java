@@ -76,4 +76,16 @@ public class StorageService {
         });
     return fileInfos;
     }
+
+    public void deleteFromSystem(String name) {
+        FileData fileData = fileRepo.findByName(name)
+                .orElseThrow(() -> new RuntimeException("File Not Found: " + name));
+
+        File file = new File(fileData.getFilePath());
+        if (file.exists() && !file.delete()) {
+            throw new RuntimeException("Unable to delete file " + fileData.getFilePath());
+        }
+
+        fileRepo.delete(fileData);
+    }
 }
